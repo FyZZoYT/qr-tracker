@@ -14,13 +14,13 @@
         }
         header {
             text-align: center;
-            padding: 1rem 0; /* réduit la hauteur */
+            padding: 1rem 0; /* bandeau fin */
             background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2); /* moins lourd */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         h1 {
             margin: 0;
-            font-size: 1.8rem; /* réduit la taille du texte */
+            font-size: 1.8rem;
             letter-spacing: 1px;
         }
         main {
@@ -39,9 +39,26 @@
             width: 90%;
         }
         .total {
-            font-size: 3rem; /* un peu plus petit */
+            font-size: 3rem;
             font-weight: bold;
             color: #3b82f6;
+        }
+        .buttons {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .buttons a {
+            background:#3b82f6;
+            color:white;
+            padding:0.5rem 1rem;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:bold;
+        }
+        .buttons a:nth-child(2) {
+            background:#06b6d4;
         }
         .city-list {
             margin-top: 2rem;
@@ -77,6 +94,11 @@
         <div class="stats-box">
             <p>Total des scans</p>
             <div class="total">{{ total }}</div>
+
+            <div class="buttons">
+                <a href="/download">📥 Télécharger Excel</a>
+                <a href="/map" target="_blank">🗺️ Voir la carte</a>
+            </div>
         </div>
 
         <div class="city-list">
