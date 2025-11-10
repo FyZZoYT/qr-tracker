@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Tracker Local</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">📊 Tableau de bord QR Tracker</h1>
+    <div class="bg-white rounded-xl shadow p-6 mb-6">
+      <p class="text-xl font-semibold">Nombre total de scans : <span class="text-blue-600">{{ total }}</span></p>
+    </div>
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="p-3">QR ID</th>
+            <th class="p-3">Pays</th>
+            <th class="p-3">Ville</th>
+            <th class="p-3">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in scans %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-3">{{ s[0] }}</td>
+            <td class="p-3">{{ s[1] }}</td>
+            <td class="p-3">{{ s[2] }}</td>
+            <td class="p-3">{{ s[3][:19] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
