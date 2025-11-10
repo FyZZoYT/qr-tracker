@@ -1,5 +1,5 @@
 from flask import Flask, redirect, request, render_template, send_file
-import sqlite3, datetime, requests, os
+import sqlite3, datetime, os
 import pandas as pd
 import folium
 import io
@@ -21,17 +21,12 @@ if not os.path.exists(DB):
     """)
     conn.close()
 
-def get_geo(ip):
-    try:
-        r = requests.get(f"https://ipapi.co/{ip}/json/").json()
-        return r.get("city") or "Ville inconnue"
-    except:
-        return "Ville inconnue"
-
+# Route pour tracker le QR
 @app.route("/qr/<qr_id>")
 def track_qr(qr_id):
-    ip = request.remote_addr
-    city = get_geo(ip)
+    # On prend le nom du QR comme ville
+    city = qr_id
+
     conn = sqlite3.connect(DB)
     conn.execute(
         "INSERT INTO scans (qr_id, city, date) VALUES (?, ?, ?)",
@@ -39,9 +34,11 @@ def track_qr(qr_id):
     )
     conn.commit()
     conn.close()
+
     # Redirige vers ton Spotify
     return redirect("https://open.spotify.com/intl-fr/artist/7ezsPfUbut94F7g4dXi5Fl?si=XdamSx0dT12HMHhJbb3e2g")
 
+# Dashboard
 @app.route("/")
 def dashboard():
     conn = sqlite3.connect(DB)
@@ -87,17 +84,17 @@ def map_view():
     # Carte centrée sur la France
     m = folium.Map(location=[46.6, 2.5], zoom_start=5)
 
-    # Coordonnées approximatives des villes
+    # Coordonnées approximatives pour certaines villes
     city_coords = {
-        "Marseille": [43.2965, 5.3698],
-        "Paris": [48.8566, 2.3522],
-        "Lyon": [45.7640, 4.8357],
-        "Nice": [43.7102, 7.2620],
-        "Ville inconnue": [46.6, 2.5]  # centre par défaut
+        "marseille1": [43.2965, 5.3698],
+        "paris1": [48.8566, 2.3522],
+        "lyon1": [45.7640, 4.8357],
+        "nice1": [43.7102, 7.2620],
+        # Ajouter d'autres villes si nécessaire
     }
 
     for row in rows:
-        city = row[0] or "Ville inconnue"
+        city = row[0]
         if city in city_coords:
             folium.CircleMarker(
                 location=city_coords[city],
@@ -108,7 +105,7 @@ def map_view():
                 fill_color="cyan"
             ).add_to(m)
 
-    # Sauvegarde dans un fichier HTML temporaire
+    # Sauvegarde dans un fichier HTML
     map_file = "templates/map.html"
     m.save(map_file)
     return render_template("map.html")
