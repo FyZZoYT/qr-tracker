@@ -1,119 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Tracker - Statistiques</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #0f172a;
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            text-align: center;
-            padding: 1rem 0; /* bandeau fin */
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-        h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
-        }
-        main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 2rem;
-        }
-        .stats-box {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 2rem 3rem;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            max-width: 500px;
-            width: 90%;
-        }
-        .total {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #3b82f6;
-        }
-        .buttons {
-            margin-top: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-        .buttons a {
-            background:#3b82f6;
-            color:white;
-            padding:0.5rem 1rem;
-            border-radius:8px;
-            text-decoration:none;
-            font-weight:bold;
-        }
-        .buttons a:nth-child(2) {
-            background:#06b6d4;
-        }
-        .city-list {
-            margin-top: 2rem;
-            background: #0f172a;
-            border-radius: 10px;
-            padding: 1rem;
-            width: 90%;
-            max-width: 500px;
-        }
-        .city {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 0.5rem 0;
-            font-size: 1.1rem;
-        }
-        .city:last-child {
-            border-bottom: none;
-        }
-        footer {
-            margin-top: 2rem;
-            text-align: center;
-            color: rgba(255,255,255,0.6);
-            font-size: 0.9rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Tracker - Statistiques</title>
+<style>
+body { font-family:'Poppins',sans-serif; background:#0f172a; color:white; margin:0; padding:0; }
+header { text-align:center; padding:1rem 0; background:linear-gradient(135deg,#3b82f6,#06b6d4); box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+h1 { margin:0; font-size:1.8rem; }
+main { display:flex; flex-direction:column; align-items:center; margin:2rem; }
+.stats-box { background:#1e293b; border-radius:16px; padding:2rem 3rem; text-align:center; box-shadow:0 0 20px rgba(0,0,0,0.3); max-width:500px; width:90%; }
+.total { font-size:3rem; font-weight:bold; color:#3b82f6; }
+.buttons { margin-top:1rem; display:flex; justify-content:center; gap:1rem; }
+.buttons a { background:#3b82f6; color:white; padding:0.5rem 1rem; border-radius:8px; text-decoration:none; font-weight:bold; }
+.buttons a:nth-child(2) { background:#06b6d4; }
+.city-list { margin-top:2rem; background:#0f172a; border-radius:10px; padding:1rem; width:90%; max-width:500px; }
+.city-header { display:flex; justify-content:space-between; cursor:pointer; padding:0.5rem 0; border-bottom:1px solid rgba(255,255,255,0.1); }
+.city-header span { font-size:1.1rem; }
+.city-scans { display:none; margin-left:1rem; margin-top:0.5rem; padding-left:0.5rem; border-left:2px solid #3b82f6; }
+.city-scans div { padding:0.2rem 0; font-size:0.95rem; color:#a5b4fc; }
+footer { margin-top:2rem; text-align:center; color:rgba(255,255,255,0.6); font-size:0.9rem; }
+</style>
 </head>
 <body>
-    <header>
-        <h1>📊 QR Tracker</h1>
-    </header>
-    <main>
-        <div class="stats-box">
-            <p>Total des scans</p>
-            <div class="total">{{ total }}</div>
+<header>
+<h1>📊 QR Tracker</h1>
+</header>
+<main>
+<div class="stats-box">
+<p>Total des scans</p>
+<div class="total">{{ total }}</div>
+<div class="buttons">
+    <a href="/download">📥 Télécharger Excel</a>
+    <a href="/map" target="_blank">🗺️ Voir la carte</a>
+</div>
+</div>
 
-            <div class="buttons">
-                <a href="/download">📥 Télécharger Excel</a>
-                <a href="/map" target="_blank">🗺️ Voir la carte</a>
+<div class="city-list">
+<h2>🏙️ Scans par ville</h2>
+{% if city_counts %}
+    {% for city, count in city_counts.items() %}
+        <div class="city">
+            <div class="city-header" onclick="toggleScans('{{ city }}')">
+                <span>{{ city }} ({{ count }})</span>
+                <span>▼</span>
+            </div>
+            <div class="city-scans" id="scans-{{ city }}">
+                {% for date in city_scans[city] %}
+                    <div>{{ date }}</div>
+                {% endfor %}
             </div>
         </div>
+    {% endfor %}
+{% else %}
+    <p>Aucun scan pour l’instant.</p>
+{% endif %}
+</div>
+</main>
 
-        <div class="city-list">
-            <h2>🏙️ Scans par ville</h2>
-            {% if city_counts %}
-                {% for city, count in city_counts.items() %}
-                    <div class="city">
-                        <span>{{ city }}</span>
-                        <span>{{ count }}</span>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>Aucun scan pour l’instant.</p>
-            {% endif %}
-        </div>
-    </main>
+
+<script>
+function toggleScans(city){
+    let elem = document.getElementById('scans-' + city);
+    if(elem.style.display === 'none' || elem.style.display === ''){
+        elem.style.display = 'block';
+    } else {
+        elem.style.display = 'none';
+    }
+}
+</script>
 </body>
 </html>
