@@ -1,38 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>QR Tracker Local</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Tracker - Statistiques</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f172a;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem;
+        }
+        .stats-box {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem 3rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 90%;
+        }
+        .total {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .city-list {
+            margin-top: 2rem;
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 1rem;
+            width: 90%;
+            max-width: 500px;
+        }
+        .city {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        .city:last-child {
+            border-bottom: none;
+        }
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-4xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6">📊 Tableau de bord QR Tracker</h1>
-    <div class="bg-white rounded-xl shadow p-6 mb-6">
-      <p class="text-xl font-semibold">Nombre total de scans : <span class="text-blue-600">{{ total }}</span></p>
-    </div>
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-blue-600 text-white">
-          <tr>
-            <th class="p-3">QR ID</th>
-            <th class="p-3">Pays</th>
-            <th class="p-3">Ville</th>
-            <th class="p-3">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for s in scans %}
-          <tr class="border-b hover:bg-gray-50">
-            <td class="p-3">{{ s[0] }}</td>
-            <td class="p-3">{{ s[1] }}</td>
-            <td class="p-3">{{ s[2] }}</td>
-            <td class="p-3">{{ s[3][:19] }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
+<body>
+    <header>
+        <h1>📊 QR Tracker - Statistiques</h1>
+    </header>
+    <main>
+        <div class="stats-box">
+            <p>Total des scans</p>
+            <div class="total">{{ total }}</div>
+        </div>
+
+        <div class="city-list">
+            <h2>🏙️ Scans par ville</h2>
+            {% if city_counts %}
+                {% for city, count in city_counts.items() %}
+                    <div class="city">
+                        <span>{{ city }}</span>
+                        <span>{{ count }}</span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun scan pour l’instant.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer>
+        Fait avec ❤️ par Victor
+    </footer>
 </body>
 </html>
